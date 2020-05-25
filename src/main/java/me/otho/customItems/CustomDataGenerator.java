@@ -13,6 +13,10 @@ import net.minecraft.data.IDataProvider;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -37,17 +41,16 @@ public class CustomDataGenerator {
 	
 	public static void run(boolean includesClient) {
 		Set<String> mods = new HashSet<>();
-		mods.add("customitems");
+		mods.add(CustomItems.MOD_ID);
 		Collection<Path> existingPacks = new LinkedList<>();
-		existingPacks.add(Paths.get("D:\\MinecraftDev\\CustomItems\\src\\main\\resources"));
+		existingPacks.add(ResourcePaths.respack_src);
 		
 		// Output Dir
-		Path path = Paths.get("customitems");
 		Collection<Path> inputs = Collections.emptySet();
 		boolean structureValidator = true;
 		
 		GatherDataEvent.DataGeneratorConfig dataGeneratorConfig = 
-				new GatherDataEvent.DataGeneratorConfig(mods, path, inputs, true, true, true, true, structureValidator);
+				new GatherDataEvent.DataGeneratorConfig(mods, ResourcePaths.respack_generated, inputs, true, true, true, true, structureValidator);
 		ExistingFileHelper existingFileHelper = new ExistingFileHelper(existingPacks, structureValidator);
 		
 		DataGenerator dataGenerator = dataGeneratorConfig.makeGenerator(
@@ -59,5 +62,9 @@ public class CustomDataGenerator {
 			gatherClientData(dataGenerator, existingFileHelper);
 		
 		dataGeneratorConfig.runAll();
+		
+		ResourcePaths.pack_mcmeta(ResourcePaths.respack_generated, "CustomItems Generated Resources");
 	}
+	
+
 }

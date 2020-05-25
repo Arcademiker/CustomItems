@@ -51,6 +51,7 @@ public class CustomItems {
 			throw new RuntimeException("Duplicated Class Instantiation: CustomItems");
 		
 		ForgeConfig.construct();
+		GlobalDataPack.load();
 	}
 
 	@Mod.EventBusSubscriber(modid = CustomItems.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
