@@ -1,0 +1,7 @@
+{
+  "parent": "block/door_bottom_rh",
+  "textures": {
+    "bottom": "customitems:block/custom_glass",
+    "top": "customitems:block/custom_glass"
+  }
+}

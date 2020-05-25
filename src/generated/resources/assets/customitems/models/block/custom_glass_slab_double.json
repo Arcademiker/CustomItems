@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "customitems:block/custom_glass",
+    "up": "customitems:block/custom_glass",
+    "north": "customitems:block/custom_glass",
+    "south": "customitems:block/custom_glass",
+    "east": "customitems:block/custom_glass",
+    "west": "customitems:block/custom_glass",
+    "particle": "customitems:block/custom_glass"
+  }
+}

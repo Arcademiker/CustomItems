@@ -6,8 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import cpw.mods.fml.common.FMLLog;
 import me.otho.customItems.CustomItems;
 import me.otho.customItems.configuration.ForgeConfig;
 
@@ -16,10 +17,11 @@ public class LogHelper {
   private static ArrayList<String> buffer = new ArrayList<String>();
   private static File logFile;
   private static FileWriter writer;
+  private static final Logger logger = LogManager.getLogger(CustomItems.MOD_ID);
 
   public static void log(Level logLevel, Object object) {
     if (ForgeConfig.debug) {
-      FMLLog.log(CustomItems.MOD_NAME, logLevel, String.valueOf(object));
+    	logger.log(logLevel, String.valueOf(object));
     }
     if (ForgeConfig.logFile) {
       try {

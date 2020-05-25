@@ -2,10 +2,6 @@ package me.otho.customItems.mod.handler;
 
 import java.util.Random;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameData;
-import cpw.mods.fml.common.registry.GameRegistry;
 import me.otho.customItems.configuration.jsonReaders.blocks.Cfg_blockDrop;
 import me.otho.customItems.configuration.jsonReaders.common.Cfg_drop;
 import me.otho.customItems.registry.BlockRegistry;
@@ -14,6 +10,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class BlockDropHandler {
 
@@ -36,8 +34,8 @@ public class BlockDropHandler {
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onBlockDrop(HarvestDropsEvent event) {
     Random random = new Random();
-    Block block = event.block;
-
+    Block block = event.getState().getBlock();
+/*
     // LogHelper.info("block before break: " + Block.getIdFromBlock(block));
     String uniqueIdentifier = GameData.getBlockRegistry().getNameForObject(block);
     if (uniqueIdentifier != null) {
@@ -72,7 +70,7 @@ public class BlockDropHandler {
     } else {
       LogHelper.warn("Block " + Block.getIdFromBlock(block) + " is missing in registry!");
     }
-
+*/
   }
 
 }

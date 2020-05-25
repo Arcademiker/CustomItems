@@ -2,18 +2,17 @@ package me.otho.customItems.mod.handler;
 
 import java.util.Random;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import me.otho.customItems.configuration.jsonReaders.common.Cfg_drop;
 import me.otho.customItems.configuration.jsonReaders.entities.Cfg_entityDrop;
 import me.otho.customItems.registry.EntityRegistry;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class EntityDropHandler {
 
@@ -36,8 +35,9 @@ public class EntityDropHandler {
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onEntityDrop(LivingDropsEvent event) {
     Random random = new Random();
-    Entity ent = event.entityLiving;
-
+    LivingEntity ent = event.getEntityLiving();
+    
+    /*
     if (EntityList.classToStringMapping.containsKey(event.entityLiving.getClass())) {
       String entityId = ((String) EntityList.classToStringMapping.get(event.entityLiving.getClass()));
 
@@ -45,7 +45,7 @@ public class EntityDropHandler {
         Cfg_entityDrop entityDrop = EntityRegistry.drops.get(entityId);
 
         if (entityDrop.overrides) {
-          event.drops.clear();
+          event.getDrops().clear();
         }
 
         for (Cfg_drop drop : entityDrop.drops) {
@@ -58,6 +58,7 @@ public class EntityDropHandler {
             damage = Integer.parseInt(parser[2]);
           }
 
+          
           Item item = GameRegistry.findItem(modId, name);
           int quantity = getItemDropQuantity(drop);
 
@@ -66,5 +67,6 @@ public class EntityDropHandler {
         }
       }
     }
+    */
   }
 }

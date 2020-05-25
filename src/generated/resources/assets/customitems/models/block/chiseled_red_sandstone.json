@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "customitems:block/red_sandstone_bottom",
+    "up": "customitems:block/red_sandstone_top",
+    "north": "customitems:block/red_sandstone_carved",
+    "south": "customitems:block/red_sandstone_carved",
+    "east": "customitems:block/red_sandstone_carved",
+    "west": "customitems:block/red_sandstone_carved",
+    "particle": "customitems:block/red_sandstone_top"
+  }
+}

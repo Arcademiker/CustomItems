@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "customitems:custom_glass_fence",
+    "customitems:spruce_fence",
+    "customitems:birch_fence",
+    "customitems:jungle_fence",
+    "customitems:dark_oak_fence",
+    "customitems:acacia_fence"
+  ]
+}

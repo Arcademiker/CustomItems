@@ -19,7 +19,7 @@ public class Cfg_fluid extends Cfg_basicData {
 
   // public boolean fireSource = false;
   public Cfg_fluid() {
-    bucket.name = null;
+//    bucket.name = null;
     bucket.maxStackSize = 1;
     bucket.creativeTab = null;
     bucket.textureName = null;

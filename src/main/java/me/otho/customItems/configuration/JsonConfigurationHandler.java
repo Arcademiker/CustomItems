@@ -14,10 +14,9 @@ import me.otho.customItems.registry.Registry;
 import me.otho.customItems.utility.LogHelper;
 
 public class JsonConfigurationHandler {
-  public static JsonSchema data;
   public static JsonSchema allData;
 
-  public static void init(String folderPath, File source) throws IOException {
+  public static void init(String folderPath) throws IOException {
     File folder = new File(folderPath);
     allData = new JsonSchema();
 
@@ -49,7 +48,6 @@ public class JsonConfigurationHandler {
           }
         }
         LogHelper.finishSection();
-        Registry.register(allData);
       }
     } else {
       folder.mkdir();
@@ -62,7 +60,6 @@ public class JsonConfigurationHandler {
 
   private static void mergeGson(JsonSchema data, JsonSchema mergeTo) {
     mergeTo.blocks = ArrayUtils.addAll(data.blocks, mergeTo.blocks);
-    mergeTo.chests = ArrayUtils.addAll(data.chests, mergeTo.chests);
     mergeTo.items = ArrayUtils.addAll(data.items, mergeTo.items);
     mergeTo.foods = ArrayUtils.addAll(data.foods, mergeTo.foods);
     mergeTo.pickaxes = ArrayUtils.addAll(data.pickaxes, mergeTo.pickaxes);
@@ -78,12 +75,6 @@ public class JsonConfigurationHandler {
     mergeTo.fluids = ArrayUtils.addAll(data.fluids, mergeTo.fluids);
     mergeTo.creativeTabs = ArrayUtils.addAll(data.creativeTabs, mergeTo.creativeTabs);
     mergeTo.crops = ArrayUtils.addAll(data.crops, mergeTo.crops);
-
-    mergeTo.changeBlocks = ArrayUtils.addAll(data.changeBlocks, mergeTo.changeBlocks);
-    mergeTo.changeItems = ArrayUtils.addAll(data.changeItems, mergeTo.changeItems);
-    mergeTo.changeFoods = ArrayUtils.addAll(data.changeFoods, mergeTo.changeFoods);
-
-    mergeTo.oreGen = ArrayUtils.addAll(data.oreGen, mergeTo.oreGen);
 
     mergeTo.entitiesDrop = ArrayUtils.addAll(data.entitiesDrop, mergeTo.entitiesDrop);
     mergeTo.blocksDrop = ArrayUtils.addAll(data.blocksDrop, mergeTo.blocksDrop);

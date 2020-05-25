@@ -141,7 +141,7 @@
         },
         {
             "name": "Custom Glass",           
-            "textureName": "customGlass",
+            "textureName": "custom_glass",
             
             "registerOrder": 1,
             "stepSound": "glass",
@@ -156,8 +156,8 @@
         {
             "name": "Custom Glass Pane",           
             "multipleTextures": {
-                "xpos": "customGlass",               
-                "ypos": "customGlass"              
+                "xpos": "custom_glass",               
+                "ypos": "custom_glass"              
             },   
             
             "registerOrder": 1,
@@ -174,7 +174,7 @@
         },
         {
             "name": "Custom Glass Stairs",           
-            "textureName": "customGlass",
+            "textureName": "custom_glass",
             
             "registerOrder": 1,
             "stepSound": "glass",
@@ -190,7 +190,7 @@
         },
         {
             "name": "Custom Glass Slab",           
-            "textureName": "customGlass",
+            "textureName": "custom_glass",
             
             "registerOrder": 1,
             "stepSound": "glass",
@@ -206,7 +206,7 @@
         },
         {
             "name": "Custom Glass Fence",           
-            "textureName": "customGlass",
+            "textureName": "custom_glass",
             
             "registerOrder": 1,
             "stepSound": "glass",
@@ -222,7 +222,7 @@
         },
         {
             "name": "Custom Glass Wall",           
-            "textureName": "customGlass",
+            "textureName": "custom_glass",
             
             "registerOrder": 1,
             "stepSound": "glass",

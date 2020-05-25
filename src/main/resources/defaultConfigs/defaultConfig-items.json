@@ -12,10 +12,10 @@
             "textureName": "banana",
             "potionEffects": [
                 {
-                    "effect": "fireResistance"
+                    "effect": "fire_resistance"
                 },
                 {
-                    "effect": "jump"
+                    "effect": "jump_boost"
                 }
             ],
             "name": "Fire Jumping Banana"
