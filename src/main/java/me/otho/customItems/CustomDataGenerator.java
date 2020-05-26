@@ -22,6 +22,7 @@ public class CustomDataGenerator {
 	
 	static {
 		clientDataProviders.add(ModelDataProvider::new);
+		clientDataProviders.add(LocalizationGenerator::new);
 		
 		commonDataProviders.add(BlockTagsProvider::new);
 		commonDataProviders.add(ItemTagsProvider::new);
@@ -65,7 +66,8 @@ public class CustomDataGenerator {
 
 		dataGeneratorConfig.runAll();
 		LogHelper.info("Data generation complete");
-		
+
+
 		ResourcePaths.pack_mcmeta(ResourcePaths.respack_generated, "CustomItems Generated Resources");
 	}
 }

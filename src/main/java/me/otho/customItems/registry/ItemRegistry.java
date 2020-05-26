@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import me.otho.customItems.LocalizationGenerator;
 import me.otho.customItems.configuration.JsonConfigurationHandler;
 import me.otho.customItems.configuration.jsonReaders.items.JSItemBase;
 import me.otho.customItems.utility.LogHelper;
@@ -38,6 +39,9 @@ public class ItemRegistry {
 		for (JSItemBase data: dataList) {
 			LogHelper.info("Instantiating Item: " + data.toString(), 1);
 			Item item = data.construct();
+			
+			// Localization
+			LocalizationGenerator.put(item, data.getFriendlyName());
 
 			if (item == null) {
 				LogHelper.error("Failed to register: Item " + data.getFriendlyName());

@@ -3,8 +3,10 @@ package me.otho.customItems.mod.creativeTab;
 import java.util.HashMap;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 import me.otho.customItems.CustomItems;
+import me.otho.customItems.LocalizationGenerator;
 import me.otho.customItems.configuration.ForgeConfig;
 import me.otho.customItems.configuration.jsonReaders.common.Cfg_creativeTab;
 import me.otho.customItems.configuration.jsonReaders.common.IRegistrable;
@@ -38,6 +40,9 @@ public class CustomTab extends ItemGroup {
 		this.iconName = null;
 		customTabs.put(labelName, this);
 		this.iconItem = iconItem;
+		
+		// Localization
+		LocalizationGenerator.put(this, labelName, "CustomItems");
 	}
 	
 	public CustomTab(Cfg_creativeTab data) {
@@ -45,6 +50,9 @@ public class CustomTab extends ItemGroup {
 		this.labelName = data.getRegistryName();
 		this.iconName = data.iconItem;
 		customTabs.put(this.labelName, this);
+		
+		// Localization
+		LocalizationGenerator.put(this, labelName, data.getFriendlyName());
 	}
 
 	@Override
@@ -68,5 +76,9 @@ public class CustomTab extends ItemGroup {
 				return customTabs.get(key);
 		}
 		return null;
+	}
+	
+	public static void foreachTabs(Consumer<? super ItemGroup> action) {
+		customTabs.values().forEach(action);;
 	}
 }

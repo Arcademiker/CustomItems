@@ -174,7 +174,7 @@ public class ModelDataProvider extends BlockStateProvider {
 		trapdoorBlock(block, resLoc, false);
 		
 		// Item model
-		ModelFile invModel = new ModelFile.UncheckedModelFile(block.getRegistryName().getNamespace() +":" + block.getRegistryName().getPath() + "_bottom");
+		ModelFile invModel = new ModelFile.UncheckedModelFile(block.getRegistryName().getNamespace() +":block/" + block.getRegistryName().getPath() + "_bottom");
 		String invFileName = "item/"+block.getRegistryName().getPath();
 		models().getBuilder(invFileName).parent(invModel);
 	}

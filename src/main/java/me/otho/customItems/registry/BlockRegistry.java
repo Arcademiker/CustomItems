@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import me.otho.customItems.LocalizationGenerator;
 import me.otho.customItems.configuration.JsonConfigurationHandler;
 import me.otho.customItems.configuration.jsonReaders.blocks.Cfg_block;
 import me.otho.customItems.configuration.jsonReaders.blocks.Cfg_blockDrop;
@@ -103,7 +104,10 @@ public class BlockRegistry {
 	  Block block = blockType.construct(data);
 	  if (block == null) {
 		  LogHelper.error("Failed to instantiate block: " + data.toString() + ", type was not implemented");
-	  } else {
+	  } else {			
+		  // Localization
+		  LocalizationGenerator.put(block, data.getFriendlyName());
+		
 		  blocks.add(block);
 	  }
 	  return true;
