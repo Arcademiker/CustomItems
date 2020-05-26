@@ -26,7 +26,7 @@ public class ClientRegistrationHandler {
 	
 	@SubscribeEvent
 	public static void onClientSetup(FMLClientSetupEvent event) {
-		CustomDataGenerator.run(true);
+//		CustomDataGenerator.run(true);
 		BlockRegistry.foreachBlock((block) -> {
 			if (block instanceof IRenderLayerHandler) {
 				String layer = ((IRenderLayerHandler)block).getRenderLayerName().toLowerCase();

@@ -5,13 +5,9 @@ import java.io.IOException;
 
 import me.otho.customItems.configuration.ForgeConfig;
 import me.otho.customItems.configuration.JsonConfigurationHandler;
-//import me.otho.customItems.integration.Integration;
 import me.otho.customItems.mod.creativeTab.CustomTab;
-//import me.otho.customItems.mod.handler.BlockDropHandler;
-//import me.otho.customItems.mod.handler.EntityDropHandler;
 import me.otho.customItems.proxy.ClientProxy;
-import me.otho.customItems.proxy.IProxy;
-import me.otho.customItems.proxy.ServerProxy;
+import me.otho.customItems.proxy.CommonProxy;
 import me.otho.customItems.registry.BlockRegistry;
 import me.otho.customItems.registry.CommonRegistry;
 import me.otho.customItems.registry.ItemRegistry;
@@ -20,16 +16,13 @@ import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
-import net.minecraftforge.fml.loading.FMLConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod(CustomItems.MOD_ID)
 public class CustomItems {
@@ -42,7 +35,7 @@ public class CustomItems {
 
 	public static CustomItems instance;
 
-	public static IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
+	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
 
 	public CustomItems() {
 		if (instance == null)
@@ -63,7 +56,7 @@ public class CustomItems {
 
 			String configFolderPath = modConfigDirectory.toString() + File.separator + CustomItems.MOD_ID + File.separator;
 
-			if (ForgeConfig.logFile) {
+			if (ForgeConfig.logFile.get()) {
 				LogHelper.openLog(minecraftFolder);
 			}
     		
@@ -88,12 +81,12 @@ public class CustomItems {
     	}
     	
 		@SubscribeEvent
-		public static void onCommonSetup(FMLCommonSetupEvent event) throws IOException {			
+		public static void onCommonSetup(FMLCommonSetupEvent event) throws IOException {
 			// TOOD: Fix custom world generation
 //			GameRegistry.registerWorldGenerator(new CustomWorldGenerator(), 1);
 			
 //			Integration.init();
-			proxy.Integration_NEI();
+//			proxy.Integration_NEI();
 			
 			// TODO: Fix EntityDropHandler and BlockDropHandler
 //			MinecraftForge.EVENT_BUS.register(new EntityDropHandler());
@@ -104,6 +97,13 @@ public class CustomItems {
 			ItemRegistry.postRegistraion();
 
 			LogHelper.info("End of customization");
+			
+			int generateData = ForgeConfig.generateData.get();
+			if (generateData > 0) {
+				CustomDataGenerator.run((generateData|2) == 2, (generateData|1) == 1);
+				ForgeConfig.generateData.set(0);
+				ForgeConfig.generateData.save();
+			}
 		}
 		
 		@SubscribeEvent

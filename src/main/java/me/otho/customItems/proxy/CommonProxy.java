@@ -1,6 +1,6 @@
 package me.otho.customItems.proxy;
 
-public abstract class CommonProxy implements IProxy {
+public class CommonProxy {
 //  @Override
 //  public void registerTileEntities() {
 //    GameRegistry.registerTileEntity(TileEntityCustomChest.class, TileEntityCustomChest.publicName);

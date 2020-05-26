@@ -8,17 +8,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 
+import me.otho.customItems.utility.LogHelper;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IDataProvider;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class CustomDataGenerator {
 	private final static List<BiFunction<DataGenerator, ExistingFileHelper, IDataProvider>> clientDataProviders = new LinkedList<>();
@@ -39,7 +35,7 @@ public class CustomDataGenerator {
 		commonDataProviders.forEach((dp)->dataGenerator.addProvider(dp.apply(dataGenerator, existingFileHelper)));
 	}
 	
-	public static void run(boolean includesClient) {
+	public static void run(boolean includeCommon, boolean includeClient) {
 		Set<String> mods = new HashSet<>();
 		mods.add(CustomItems.MOD_ID);
 		Collection<Path> existingPacks = new LinkedList<>();
@@ -57,14 +53,19 @@ public class CustomDataGenerator {
 				p->p, 
 				true);
 
-		gatherCommonData(dataGenerator, existingFileHelper);
-		if (includesClient)
+		if (includeCommon) {
+			LogHelper.info("Scheduled generation task for common data");
+			gatherCommonData(dataGenerator, existingFileHelper);
+		}
+	
+		if (includeClient) {
+			LogHelper.info("Scheduled generation task for client assets");
 			gatherClientData(dataGenerator, existingFileHelper);
-		
+		}
+
 		dataGeneratorConfig.runAll();
+		LogHelper.info("Data generation complete");
 		
 		ResourcePaths.pack_mcmeta(ResourcePaths.respack_generated, "CustomItems Generated Resources");
 	}
-	
-
 }

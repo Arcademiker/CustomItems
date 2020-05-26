@@ -8,8 +8,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ResourcePaths {
+	public final static String generated = CustomItems.MOD_ID + "_generated";
 	public final static Path respack_src = Paths.get("resourcepacks" + File.separator + CustomItems.MOD_ID + "_resources");
-	public final static Path respack_generated = Paths.get("resourcepacks" + File.separator + CustomItems.MOD_ID + "_generated");
+	public final static Path respack_generated = Paths.get("resourcepacks" + File.separator + generated);
+	public final static Path datapacks = Paths.get("datapacks");
+	public final static Path datapack_generated = Paths.get("datapacks" + File.separator + generated);
 	
 	public static void pack_mcmeta(Path path, String description) {
 		String format = "5";

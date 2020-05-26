@@ -23,7 +23,7 @@ public class CustomTab extends ItemGroup {
 	private final static Map<String, CustomTab> customTabs = new HashMap<>();
 	
 	public static void init() {
-		if (ForgeConfig.defaultTab) {
+		if (ForgeConfig.defaultTab.get()) {
 			new CustomTab(new ItemStack(Items.ITEM_FRAME), CustomItems.MOD_ID);
 		}
 	}

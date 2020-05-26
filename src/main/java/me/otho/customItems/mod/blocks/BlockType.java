@@ -21,7 +21,7 @@ public enum BlockType {
     FLOWER, CARPET, TORCH, 
     GATE(CustomGateBlock::new), 
     DOOR(CustomDoorBlock::new), 
-    TRAPDOORDOOR(CustomTrapDoorBlock::new), 
+    TRAPDOOR(CustomTrapDoorBlock::new), 
     LADDER, BUTTON, LEVER, BED, PRESSUREPLATE;
 	
 	BlockType() {
