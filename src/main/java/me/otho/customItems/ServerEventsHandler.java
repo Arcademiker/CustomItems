@@ -32,6 +32,9 @@ public class ServerEventsHandler {
 	
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void onTagUpdate(TagsUpdatedEvent event) {
+		if (true)
+			return;	// Disable code based tag loading... forever...
+		
 		if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER) {
 			CustomTagsProvider.addBlockTags();
 			CustomTagsProvider.addItemTags();

@@ -16,6 +16,7 @@ import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
+import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -79,7 +80,7 @@ public class CustomItems {
     		BlockRegistry.registerBlockItems(event.getRegistry());
     		ItemRegistry.registerItems(event.getRegistry());
     	}
-    	
+
 		@SubscribeEvent
 		public static void onCommonSetup(FMLCommonSetupEvent event) throws IOException {
 			// TOOD: Fix custom world generation
@@ -100,7 +101,7 @@ public class CustomItems {
 			
 			int generateData = ForgeConfig.generateData.get();
 			if (generateData > 0) {
-				CustomDataGenerator.run((generateData|2) == 2, (generateData|1) == 1);
+				CustomDataGenerator.run((generateData|2)>0, (generateData|1)>0);
 				ForgeConfig.generateData.set(0);
 				ForgeConfig.generateData.save();
 			}

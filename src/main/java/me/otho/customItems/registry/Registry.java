@@ -151,7 +151,7 @@ public class Registry {
 
       if (data.blocksDrop != null) {
         LogHelper.info("Block drops: ", 0);
-        BlockRegistry.registerBlockDrop(data.blocksDrop);
+//        BlockRegistry.registerBlockDrop(data.blocksDrop);
         LogHelper.finishSection();
       }
 

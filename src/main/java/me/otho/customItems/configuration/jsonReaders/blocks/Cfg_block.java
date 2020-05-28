@@ -1,5 +1,8 @@
 package me.otho.customItems.configuration.jsonReaders.blocks;
 
+import org.apache.commons.lang3.tuple.Triple;
+
+import me.otho.customItems.CustomItems;
 import me.otho.customItems.configuration.jsonReaders.common.Cfg_basicData;
 import me.otho.customItems.mod.blocks.BlockType;
 import me.otho.customItems.mod.materials.CI_Material;
@@ -10,6 +13,8 @@ import net.minecraft.block.FireBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraftforge.common.ToolType;
 
 public class Cfg_block extends Cfg_basicData {
@@ -20,31 +25,30 @@ public class Cfg_block extends Cfg_basicData {
 	protected String type = "NORMAL";
 	protected String stepSound = "stone";
 
-  // Block Properties
+	// Block Properties
 	protected String material = "rock";
-  public String toolClass;
+	public String toolClass;
 	protected float resistance = 10;
 	protected float hardness = 2;
 	protected int lightLevel = 0;
 	protected int lightOpacity = 0;
-  public int harvestLevel = 0;
+	public int harvestLevel = 0;
 	protected float slipperiness = 0.6f;
 	protected boolean isCollidable = true;
 	protected int flammability = 0;
 	protected int fireEncouragement = 0;
 
-  // Drop
-  public boolean dropsItSelf = false;
-  public boolean canSilkHarvest = false;
+	// Drop (Loot Table)
+	public boolean breaks = false;
+	public boolean canSilkHarvest = false;
+	public String dropItemName = null;
+	// These are applicable if canSilkHarvest==dropsItSelf==true && dropItemName!=null
+	public int minItemDrop = 1;
+	public int maxItemDrop = 1;
+	public int eachExtraItemDropChance = 0;
 
-  public String dropItemName;
-  public int dropItemDamage = 0;
-  public int minItemDrop = 1;
-  public int maxItemDrop = 1;
-  public int eachExtraItemDropChance = 50;
-
-  // button/pressure plate
-  public int tickRate = 30;
+	// button/pressure plate
+	public int tickRate = 30;
 
 	public Material getMaterial() {
 		return CI_Material.getMaterial(this.material);
@@ -85,8 +89,6 @@ public class Cfg_block extends Cfg_basicData {
 
 		if (!this.isCollidable)
 			prop.doesNotBlockMovement();
-		if (!this.dropsItSelf)
-			prop.noDrops();
 
 		prop.lightValue(Util.range(this.lightLevel, 0, 15));
 
@@ -133,6 +135,8 @@ public class Cfg_block extends Cfg_basicData {
 			textureNames[3] = this.multipleTextures.zpos;
 			textureNames[4] = this.multipleTextures.xneg;
 			textureNames[5] = this.multipleTextures.xpos;
+		} else {
+			textureNames[0] = this.getRegistryName();
 		}
 	}
 	
@@ -147,5 +151,76 @@ public class Cfg_block extends Cfg_basicData {
 			this.opacity = opacity;
 			this.layer = layer;
 		}
+	}
+	
+	/////////////////////////////////////////////
+	/// Loot table and Item drops
+	/////////////////////////////////////////////
+	/*
+	 *  Truth table:                                       NORMAL         | SILK_TOUCH
+		dropItemName=air, canSilkHarvest=0, breaks=0: original block | original block
+		dropItemName=air, canSilkHarvest=1, breaks=0: original block | original block
+		dropItemName=xxx, canSilkHarvest=0, breaks=0: dropItemName   | dropItemName
+		dropItemName=xxx, canSilkHarvest=1, breaks=0: dropItemName   | original block
+		dropItemName=air, canSilkHarvest=0, breaks=1: NOTHING        | NOTHING
+		dropItemName=air, canSilkHarvest=1, breaks=1: NOTHING        | original block
+		dropItemName=xxx, canSilkHarvest=0, breaks=1: NOTHING        | NOTHING
+		dropItemName=xxx, canSilkHarvest=1, breaks=1: NOTHING        | dropItemName
+	 */
+	public static enum LootType {
+		ALWAYS_BLOCK, ALWAYS_ITEM, COAL_ORE, GLASS, NOTHING;
+	}
+	
+	protected Item getDropItemRecord() {
+		if (this.dropItemName==null)
+			return Items.AIR;
+
+		int iSeperator = this.dropItemName.indexOf(':');
+		String domain = iSeperator>=0 ? this.dropItemName.substring(0, iSeperator) : CustomItems.MOD_ID;
+		String path = iSeperator>=0 ? this.dropItemName.substring(iSeperator+1) : this.dropItemName;
+
+		Item item = Util.get(Item.class, domain, path);
+		
+		return item==null ? Items.AIR : item;
+	}
+	
+	protected Item getDropBlockRecord() {
+		return Util.get(Block.class, CustomItems.MOD_ID, this.getRegistryName()).asItem();
+	}
+	
+	public Triple<LootType, Item, Item> getDrops() {
+		LootType type;
+		Item normal, silktouch;
+		if (this.breaks) {
+			normal = Items.AIR;
+			if (this.canSilkHarvest) {
+				type = LootType.GLASS;
+				Item item = getDropItemRecord();
+				silktouch = item==Items.AIR ? getDropBlockRecord() : item;
+			} else {
+				type = LootType.NOTHING;
+				silktouch = Items.AIR;
+			}
+		} else {
+			Item item = getDropItemRecord();
+			Item block = getDropBlockRecord();
+			
+			if (item==Items.AIR) {
+				type = LootType.ALWAYS_BLOCK;
+				normal = block;
+				silktouch = block;
+			} else {
+				normal = item;
+				if (this.canSilkHarvest) {
+					type = LootType.COAL_ORE;
+					silktouch = block;
+				} else {
+					type = LootType.ALWAYS_ITEM;
+					silktouch = item;
+				}
+			}
+		}
+		
+		return Triple.of(type, normal, silktouch);
 	}
 }

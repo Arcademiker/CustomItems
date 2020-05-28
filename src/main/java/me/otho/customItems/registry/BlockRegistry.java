@@ -1,16 +1,14 @@
 package me.otho.customItems.registry;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import me.otho.customItems.LocalizationGenerator;
 import me.otho.customItems.configuration.JsonConfigurationHandler;
 import me.otho.customItems.configuration.jsonReaders.blocks.Cfg_block;
-import me.otho.customItems.configuration.jsonReaders.blocks.Cfg_blockDrop;
 import me.otho.customItems.mod.blocks.BlockType;
 import me.otho.customItems.mod.blocks.IBlockItemProvider;
 //import me.otho.customItems.integration.Integration;
@@ -21,7 +19,8 @@ import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class BlockRegistry {
-	private static List<Block> blocks = new LinkedList<>();
+	// Only available during start-up
+	private static Map<Block, Cfg_block> blocks = new HashMap<>();
 
 	public static void initBlocks() {
 		Cfg_block[] dataList = JsonConfigurationHandler.allData.blocks;
@@ -38,153 +37,41 @@ public class BlockRegistry {
 	}
 	
 	public static void registerBlocks(IForgeRegistry<Block> registry) {
-		for (Block block: blocks)
-			registry.register(block);
+		foreachBlock((block)->registry.register(block));
 	}
 	
 	public static void registerBlockItems(IForgeRegistry<Item> registry) {
-		for (Block block: blocks) {
+		foreachBlock((block)-> {
 			if (block instanceof IBlockItemProvider) {
 				registry.register(block.asItem());
 			}
-		}
+		});
 	}
 	
 	public static void foreachBlock(Consumer<? super Block> consumer) {
-		blocks.forEach(consumer);
+		blocks.keySet().forEach(consumer);
 	}
 	
-  public static HashMap<String, Cfg_blockDrop> drops = new HashMap<String, Cfg_blockDrop>();
+	public static void foreachBlock(BiConsumer<? super Block, ? super Cfg_block> consumer) {
+		blocks.forEach(consumer);
+	}
 
-  public static boolean registerBlockDrop(Cfg_blockDrop data) {
-    LogHelper.info("Registering Block Drop: " + data.id, 1);
+	public static boolean initBlock(Cfg_block data) {
+		LogHelper.info("Instantiating Block: " + data.toString(), 1);
+		BlockType blockType = data.toBlockType();
+		if (blockType == null) {
+			LogHelper.error("Failed to instantiate block: " + data.toString() + ", type was not recognized");
+			return false;
+		}
 
-    String[] parser = data.id.split(":");
-    if (parser.length < 3) {
-      data.id = data.id.concat(":0");
-    }
-
-    if (drops.containsKey(data.id)) {
-
-      Cfg_blockDrop drop = drops.get(data.id);
-
-      drop.drops = ArrayUtils.addAll(drop.drops, data.drops);
-
-      drops.put(data.id, drop);
-    } else {
-      drops.put(data.id, data);
-    }
-
-    return true;
-  }
-
-  public static boolean registerBlockDrop(Cfg_blockDrop[] data) {
-    int i;
-
-    for (i = 0; i < data.length; i++) {
-      boolean registered = registerBlockDrop(data[i]);
-
-      if (!registered) {
-        LogHelper.error("Failed to register: Block drop for" + data[i].id);
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  public static boolean initBlock(Cfg_block data) {
-	  LogHelper.info("Instantiating Block: " + data.toString(), 1);
-	  BlockType blockType = data.toBlockType();
-	  if (blockType == null) {
-		  LogHelper.error("Failed to instantiate block: " + data.toString() + ", type was not recognized");
-		  return false;
-	  }
-	  
-	  Block block = blockType.construct(data);
-	  if (block == null) {
-		  LogHelper.error("Failed to instantiate block: " + data.toString() + ", type was not implemented");
-	  } else {			
-		  // Localization
-		  LocalizationGenerator.put(block, data.getFriendlyName());
-		
-		  blocks.add(block);
-	  }
-	  return true;
-	  
-//    data.toolClass = Util.validateToolClass(data.toolClass);
-//    if (Util.validateType(data.type)) {
-//      BlockType blockType = BlockType.valueOf(data.type.toUpperCase());
-//      switch (blockType) {
-//        // 1.0.10
-//        case FLOWER:
-//          registerFlowerBlock(data);
-//        break;
-//        case CARPET:
-//          registerCarpetBlock(data);
-//        break;
-//        case TORCH:
-//          registerTorchBlock(data);
-//        break;
-//        case GATE:
-//          registerGateBlock(data);
-//        break;
-//        case DOOR:
-//          registerDoorBlock(data);
-//        break;
-//        case TRAPDOOR:
-//          registerTrapDoorBlock(data);
-//        break;
-//        case LADDER:
-//          registerLadderBlock(data);
-//        break;
-//        case BUTTON:
-//          registerButtonBlock(data);
-//        break;
-//        case LEVER:
-//          registerLeverBlock(data);
-//        break;
-//        case BED:
-//          registerBedBlock(data);
-//        break;
-//        case PRESSUREPLATE:
-//          registerPressurePlateBlock(data);
-//        break;
-//        // pre 1.0.10
-//        case FENCE:
-//          registerFenceBlock(data);
-//        break;
-//        case LOG:
-//        case PILLARS:
-//          registerLogBlock(data);
-//        break;
-//        case PANE:
-//          registerPaneBlock(data);
-//        break;
-//        case SLAB:
-//          registerSlabBlock(data);
-//        break;
-//        case STAIRS:
-//          registerStairsBlock(data);
-//        break;
-//        case WALL:
-//          registerWallBlock(data);
-//        break;
-//        case FALLING:
-//          registerFallingBlock(data);
-//        break;
-//        case CROSSED:
-//          registerCrossedBlock(data);
-//        break;
-//        case NORMAL:
-//          registerNormalBlock(data);
-//        break;
-//        default:
-//          LogHelper.error("Failed to register block: " + data.name + ", type was not recognized");
-//        break;
-//      }
-//    }
-  }
+		Block block = blockType.construct(data);
+		if (block == null) {
+			LogHelper.error("Failed to instantiate block: " + data.toString() + ", type was not implemented");
+		} else {
+			blocks.put(block, data);
+		}
+		return true;
+	}
 
 //  public static boolean registerCrop(Cfg_crop data) {
 //    LogHelper.info("Registering crop: " + data.name, 1);

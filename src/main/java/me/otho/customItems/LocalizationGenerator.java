@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import me.otho.customItems.registry.BlockRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
@@ -53,6 +54,8 @@ public class LocalizationGenerator implements IDataProvider {
 		Path path = Paths.get("assets", CustomItems.MOD_ID, "lang", "en_us.json");
 		path = this.generator.getOutputFolder().resolve(path);
 
+		BlockRegistry.foreachBlock((block, data) -> put(block, data.getFriendlyName()));
+		
 		JsonObject en_us_json = new JsonObject();
 		en_us.entrySet()
 			.stream()

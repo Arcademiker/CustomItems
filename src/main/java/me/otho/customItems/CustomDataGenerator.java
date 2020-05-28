@@ -26,17 +26,27 @@ public class CustomDataGenerator {
 		
 		commonDataProviders.add(BlockTagsProvider::new);
 		commonDataProviders.add(ItemTagsProvider::new);
+		commonDataProviders.add(LootTableDataProvider::new);
 	}
 	
 	public static void gatherClientData(DataGenerator dataGenerator, ExistingFileHelper existingFileHelper) {
+		LogHelper.info("Scheduled generation task for client assets");
 		clientDataProviders.forEach((dp)->dataGenerator.addProvider(dp.apply(dataGenerator, existingFileHelper)));
 	}
 	
 	public static void gatherCommonData(DataGenerator dataGenerator, ExistingFileHelper existingFileHelper) {
+		LogHelper.info("Scheduled generation task for common data");
 		commonDataProviders.forEach((dp)->dataGenerator.addProvider(dp.apply(dataGenerator, existingFileHelper)));
 	}
 	
 	public static void run(boolean includeCommon, boolean includeClient) {
+		if (includeCommon)
+			run(false);
+		if (includeClient)
+			run(true);
+	}
+	
+	private static void run(boolean isClient) {
 		Set<String> mods = new HashSet<>();
 		mods.add(CustomItems.MOD_ID);
 		Collection<Path> existingPacks = new LinkedList<>();
@@ -47,22 +57,19 @@ public class CustomDataGenerator {
 		boolean structureValidator = true;
 		
 		GatherDataEvent.DataGeneratorConfig dataGeneratorConfig = 
-				new GatherDataEvent.DataGeneratorConfig(mods, ResourcePaths.respack_generated, inputs, true, true, true, true, structureValidator);
+				new GatherDataEvent.DataGeneratorConfig(
+						mods, 
+						isClient?ResourcePaths.respack_generated:ResourcePaths.datapack_generated, 
+						inputs, 
+						true, true, true, true, structureValidator);
 		ExistingFileHelper existingFileHelper = new ExistingFileHelper(existingPacks, structureValidator);
 		
-		DataGenerator dataGenerator = dataGeneratorConfig.makeGenerator(
-				p->p, 
-				true);
+		DataGenerator dataGenerator = dataGeneratorConfig.makeGenerator(p->p, true);
 
-		if (includeCommon) {
-			LogHelper.info("Scheduled generation task for common data");
-			gatherCommonData(dataGenerator, existingFileHelper);
-		}
-	
-		if (includeClient) {
-			LogHelper.info("Scheduled generation task for client assets");
+		if (isClient)
 			gatherClientData(dataGenerator, existingFileHelper);
-		}
+		else
+			gatherCommonData(dataGenerator, existingFileHelper);
 
 		dataGeneratorConfig.runAll();
 		LogHelper.info("Data generation complete");
