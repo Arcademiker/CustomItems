@@ -24,7 +24,7 @@ public class CustomTab extends ItemGroup {
 	// registryName - ItemGroup instance
 	private final static Map<String, CustomTab> customTabs = new HashMap<>();
 	
-	public static void init() {
+	public static void createDefaultTab() {
 		if (ForgeConfig.defaultTab.get()) {
 			new CustomTab(new ItemStack(Items.ITEM_FRAME), CustomItems.MOD_ID);
 		}

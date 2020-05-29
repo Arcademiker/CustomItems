@@ -6,8 +6,6 @@ import java.io.IOException;
 import me.otho.customItems.configuration.ForgeConfig;
 import me.otho.customItems.configuration.JsonConfigurationHandler;
 import me.otho.customItems.mod.creativeTab.CustomTab;
-import me.otho.customItems.proxy.ClientProxy;
-import me.otho.customItems.proxy.CommonProxy;
 import me.otho.customItems.registry.BlockRegistry;
 import me.otho.customItems.registry.CommonRegistry;
 import me.otho.customItems.registry.ItemRegistry;
@@ -16,10 +14,8 @@ import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
@@ -36,7 +32,7 @@ public class CustomItems {
 
 	public static CustomItems instance;
 
-	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
+//	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
 
 	public CustomItems() {
 		if (instance == null)
@@ -45,7 +41,6 @@ public class CustomItems {
 			throw new RuntimeException("Duplicated Class Instantiation: CustomItems");
 		
 		ForgeConfig.construct();
-		GlobalDataPack.load();
 	}
 
 	@Mod.EventBusSubscriber(modid = CustomItems.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -65,7 +60,7 @@ public class CustomItems {
 			JsonConfigurationHandler.init(configFolderPath);
 			
 			// Init and register all creative tabs
-			CustomTab.init();
+			CustomTab.createDefaultTab();
 			CommonRegistry.registerCreativeTabs(JsonConfigurationHandler.allData.creativeTabs);
     	}
 		
@@ -80,21 +75,11 @@ public class CustomItems {
     		BlockRegistry.registerBlockItems(event.getRegistry());
     		ItemRegistry.registerItems(event.getRegistry());
     	}
-
+    	
 		@SubscribeEvent
 		public static void onCommonSetup(FMLCommonSetupEvent event) throws IOException {
-			// TOOD: Fix custom world generation
-//			GameRegistry.registerWorldGenerator(new CustomWorldGenerator(), 1);
-			
-//			Integration.init();
-//			proxy.Integration_NEI();
-			
-			// TODO: Fix EntityDropHandler and BlockDropHandler
-//			MinecraftForge.EVENT_BUS.register(new EntityDropHandler());
-//			MinecraftForge.EVENT_BUS.register(new BlockDropHandler());
-			
 			// Post init
-			JsonConfigurationHandler.post_init();
+			BlockRegistry.postRegistraion();
 			ItemRegistry.postRegistraion();
 
 			LogHelper.info("End of customization");

@@ -25,7 +25,7 @@ public class Cfg_basicData implements IRegistrable {
    * registerOrder is a variable to order the items/blocks before being
    * registered. This should order items in creativetabs and NEI
    */
-  public Integer registerOrder = 0;
+  public int registerOrder = 0;
   
   public int maxStackSize = 64;
   

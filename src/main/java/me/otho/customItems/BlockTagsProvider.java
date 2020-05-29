@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 public class BlockTagsProvider extends TagsProvider<Block> {
+	@SuppressWarnings("deprecation")
 	protected BlockTagsProvider(DataGenerator generatorIn, Object dummy) {
 		super(generatorIn, Registry.BLOCK);
 	}

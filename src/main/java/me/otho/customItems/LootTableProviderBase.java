@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,20 +25,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.AlternativesLootEntry;
 import net.minecraft.world.storage.loot.ConstantRange;
 import net.minecraft.world.storage.loot.ItemLootEntry;
-import net.minecraft.world.storage.loot.LootFunction.Builder;
 import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTableManager;
-import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.StandaloneLootEntry;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import net.minecraft.world.storage.loot.conditions.MatchTool;
 import net.minecraft.world.storage.loot.conditions.SurvivesExplosion;
-import net.minecraft.world.storage.loot.functions.ApplyBonus;
 import net.minecraft.world.storage.loot.functions.ExplosionDecay;
-import net.minecraft.world.storage.loot.functions.ILootFunction;
-import net.minecraft.world.storage.loot.functions.SetCount;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public abstract class LootTableProviderBase implements IDataProvider {
@@ -124,16 +118,13 @@ public abstract class LootTableProviderBase implements IDataProvider {
         return LootTable.builder().addLootPool(builder);
     }
     
-    public static LootTable.Builder ore(IItemProvider block, IItemProvider item, int min, int max, Function<StandaloneLootEntry.Builder<?>, StandaloneLootEntry.Builder<?>> bonus) {
+    public static LootTable.Builder ore(IItemProvider block, IItemProvider item, Function<StandaloneLootEntry.Builder<?>, StandaloneLootEntry.Builder<?>> bonus) {
         LootPool.Builder builder = LootPool.builder()
                 .rolls(ConstantRange.of(1))
                 .addEntry(
                 		AlternativesLootEntry.builder(
                 				ItemLootEntry.builder(block).acceptCondition(SILK_TOUCH),
-                				bonus.apply(ItemLootEntry.builder(item)
-                					.acceptFunction(ExplosionDecay.builder())
-                					.acceptFunction(SetCount.builder(RandomValueRange.of(min, max)))
-                					)
+                				bonus.apply(ItemLootEntry.builder(item).acceptFunction(ExplosionDecay.builder()))
                 				)
                 		);
         return LootTable.builder().addLootPool(builder);

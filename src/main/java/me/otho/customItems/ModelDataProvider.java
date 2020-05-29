@@ -214,11 +214,11 @@ public class ModelDataProvider extends BlockStateProvider {
 			}
 		});
 		
-		ItemRegistry.foreachItem((item, resLoc) -> {
+		ItemRegistry.foreachItem((item, data) -> {
 			if (item instanceof SwordItem) {
-				handheld(item, resLoc);
+				handheld(item, data.getTextureResLoc());
 			} else {
-				simpleItem(item, resLoc);
+				simpleItem(item, data.getTextureResLoc());
 			}
 		});
 	}

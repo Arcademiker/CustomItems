@@ -5,7 +5,6 @@ import me.otho.customItems.mod.creativeTab.CustomTab;
 import me.otho.customItems.utility.LogHelper;
 
 public class CommonRegistry {
-
 	// Common
 	public static void registerCreativeTabs(Cfg_creativeTab[] dataList) {
 		if (dataList == null)

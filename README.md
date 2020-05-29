@@ -7,6 +7,7 @@ Most information on http://customitems.otho.me/documentation/items is still vali
 # Removed features
 __If you think this feature is important and you miss it, please feel free to contact me by posting an issue here, or contact me via discord.__
 1. Custom Chest: buggy, may be readded in the future
+1. Entity and Block Drops: Replaced by vanilla loottables
 1. World Generator: rarely used, may be readded in the future
 1. Custom tweakers
 1. Custom Hammer: this mod is supposed to be a standalone mod

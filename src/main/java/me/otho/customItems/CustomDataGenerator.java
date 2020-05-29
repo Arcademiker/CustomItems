@@ -74,7 +74,7 @@ public class CustomDataGenerator {
 		dataGeneratorConfig.runAll();
 		LogHelper.info("Data generation complete");
 
-
-		ResourcePaths.pack_mcmeta(ResourcePaths.respack_generated, "CustomItems Generated Resources");
+		if (isClient)
+			ResourcePaths.pack_mcmeta(ResourcePaths.respack_generated, "CustomItems Generated Resources");
 	}
 }

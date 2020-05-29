@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 public class ItemTagsProvider extends TagsProvider<Item> {
+	@SuppressWarnings("deprecation")
 	protected ItemTagsProvider(DataGenerator generatorIn, Object dummy) {
 		super(generatorIn, Registry.ITEM);
 	}

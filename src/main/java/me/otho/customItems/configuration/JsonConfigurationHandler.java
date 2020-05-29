@@ -10,7 +10,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import me.otho.customItems.registry.Registry;
 import me.otho.customItems.utility.LogHelper;
 
 public class JsonConfigurationHandler {
@@ -52,10 +51,6 @@ public class JsonConfigurationHandler {
     } else {
       folder.mkdir();
     }
-  }
-
-  public static void post_init() {
-    Registry.change(allData);
   }
 
   private static void mergeGson(JsonSchema data, JsonSchema mergeTo) {
