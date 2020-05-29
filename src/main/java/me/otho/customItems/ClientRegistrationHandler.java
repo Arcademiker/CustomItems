@@ -14,6 +14,8 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CustomItems.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistrationHandler {
+	public static boolean runClientDataGenerators = false;
+	
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
@@ -26,7 +28,12 @@ public class ClientRegistrationHandler {
 	
 	@SubscribeEvent
 	public static void onClientSetup(FMLClientSetupEvent event) {
-//		CustomDataGenerator.run(true);
+		ResourcePaths.createEmptyFolders(ResourcePaths.respack_src);
+		ResourcePaths.pack_mcmeta(ResourcePaths.respack_src, "CustomItems Global Datapack");
+		
+		if (runClientDataGenerators)
+			CustomDataGenerator.runClient();
+		
 		BlockRegistry.foreachBlock((block) -> {
 			if (block instanceof IRenderLayerHandler) {
 				String layer = ((IRenderLayerHandler)block).getRenderLayerName().toLowerCase();

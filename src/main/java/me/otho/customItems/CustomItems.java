@@ -86,7 +86,11 @@ public class CustomItems {
 			
 			int generateData = ForgeConfig.generateData.get();
 			if (generateData > 0) {
-				CustomDataGenerator.run((generateData|2)>0, (generateData|1)>0);
+				ClientRegistrationHandler.runClientDataGenerators = (generateData|1)>0;
+				
+				if ((generateData|2)>0)
+					CustomDataGenerator.runCommon();
+				
 				ForgeConfig.generateData.set(0);
 				ForgeConfig.generateData.save();
 			}

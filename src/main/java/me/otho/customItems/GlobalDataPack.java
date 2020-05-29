@@ -15,24 +15,36 @@ import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 
 /*
- * Global Datapack is inspired by:
+ * Global Datapack System is inspired by:
  * https://github.com/DarkRoleplay/DRP---Global-Data-Pack
  */
 @Mod.EventBusSubscriber(modid = CustomItems.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class GlobalDataPack {
 	@SubscribeEvent
 	public static void onServerAboutToStart(FMLServerAboutToStartEvent event) {
-		if (!ResourcePaths.datapacks.toFile().exists()) {
-			ResourcePaths.datapacks.toFile().mkdirs();
-		}
-		if (!ResourcePaths.datapack_generated.toFile().exists()) {
-			ResourcePaths.datapack_generated.toFile().mkdirs();
-		}
+		ResourcePaths.createEmptyFolders(ResourcePaths.datapacks);
+		ResourcePaths.createEmptyFolders(ResourcePaths.datapack_generated);
 		ResourcePaths.pack_mcmeta(ResourcePaths.datapack_generated, "CustomItems Global Datapack");
 		
-		
-		for (File globalDatapack: ResourcePaths.datapacks.toFile().listFiles(File::isDirectory)) {
-			event.getServer().getResourcePacks().addPackFinder(new GlobalDataPackFinder(globalDatapack));
+		// Scan global datapacks
+		for (final File globalDatapack: ResourcePaths.datapacks.toFile().listFiles(File::isDirectory)) {
+			event.getServer().getResourcePacks().addPackFinder(new IPackFinder() {
+				@Override
+				public <T extends ResourcePackInfo> void addPackInfosToMap(
+						Map<String, T> nameToPackMap, IFactory<T> packInfoFactory) {
+					String name = ResourcePaths.generated;
+					T t = ResourcePackInfo.createResourcePack(
+							name, 
+							false, 
+							() -> new FolderPack(globalDatapack), 
+							packInfoFactory, 
+							ResourcePackInfo.Priority.TOP);
+					
+			        if (t != null) {
+			           nameToPackMap.put(name, t);
+			        }
+				}
+			});
 		}		
 	}
 	
@@ -45,29 +57,6 @@ public class GlobalDataPack {
 		if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER) {
 			CustomTagsProvider.addBlockTags();
 			CustomTagsProvider.addItemTags();
-		}
-	}
-	
-	private static class GlobalDataPackFinder implements IPackFinder {
-		private File folder;
-		
-		public GlobalDataPackFinder(File file) {
-			this.folder = file;
-		}
-		
-		@Override
-		public <T extends ResourcePackInfo> void addPackInfosToMap(Map<String, T> nameToPackMap, IFactory<T> packInfoFactory) {
-			String name = ResourcePaths.generated;
-			T t = ResourcePackInfo.createResourcePack(
-					name, 
-					false, 
-					() -> new FolderPack(this.folder), 
-					packInfoFactory, 
-					ResourcePackInfo.Priority.TOP);
-			
-	        if (t != null) {
-	           nameToPackMap.put(name, t);
-	        }
 		}
 	}
 }

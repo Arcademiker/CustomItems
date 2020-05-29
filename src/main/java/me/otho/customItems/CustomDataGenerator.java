@@ -39,14 +39,7 @@ public class CustomDataGenerator {
 		commonDataProviders.forEach((dp)->dataGenerator.addProvider(dp.apply(dataGenerator, existingFileHelper)));
 	}
 	
-	public static void run(boolean includeCommon, boolean includeClient) {
-		if (includeCommon)
-			run(false);
-		if (includeClient)
-			run(true);
-	}
-	
-	private static void run(boolean isClient) {
+	public static void runClient() {
 		Set<String> mods = new HashSet<>();
 		mods.add(CustomItems.MOD_ID);
 		Collection<Path> existingPacks = new LinkedList<>();
@@ -59,22 +52,43 @@ public class CustomDataGenerator {
 		GatherDataEvent.DataGeneratorConfig dataGeneratorConfig = 
 				new GatherDataEvent.DataGeneratorConfig(
 						mods, 
-						isClient?ResourcePaths.respack_generated:ResourcePaths.datapack_generated, 
+						ResourcePaths.respack_generated, 
 						inputs, 
 						true, true, true, true, structureValidator);
 		ExistingFileHelper existingFileHelper = new ExistingFileHelper(existingPacks, structureValidator);
 		
 		DataGenerator dataGenerator = dataGeneratorConfig.makeGenerator(p->p, true);
 
-		if (isClient)
-			gatherClientData(dataGenerator, existingFileHelper);
-		else
-			gatherCommonData(dataGenerator, existingFileHelper);
+		gatherClientData(dataGenerator, existingFileHelper);
 
 		dataGeneratorConfig.runAll();
-		LogHelper.info("Data generation complete");
+		LogHelper.info("Client Data generation complete");
 
-		if (isClient)
-			ResourcePaths.pack_mcmeta(ResourcePaths.respack_generated, "CustomItems Generated Resources");
+		ResourcePaths.pack_mcmeta(ResourcePaths.respack_generated, "CustomItems Generated Resources");
+	}
+	
+	public static void runCommon() {
+		Set<String> mods = new HashSet<>();
+		mods.add(CustomItems.MOD_ID);
+		Collection<Path> existingPacks = new LinkedList<>();
+		
+		// Output Dir
+		Collection<Path> inputs = Collections.emptySet();
+		boolean structureValidator = true;
+		
+		GatherDataEvent.DataGeneratorConfig dataGeneratorConfig = 
+				new GatherDataEvent.DataGeneratorConfig(
+						mods, 
+						ResourcePaths.datapack_generated, 
+						inputs, 
+						true, true, true, true, structureValidator);
+		ExistingFileHelper existingFileHelper = new ExistingFileHelper(existingPacks, structureValidator);
+		
+		DataGenerator dataGenerator = dataGeneratorConfig.makeGenerator(p->p, true);
+
+		gatherCommonData(dataGenerator, existingFileHelper);
+
+		dataGeneratorConfig.runAll();
+		LogHelper.info("Common Data generation complete");
 	}
 }

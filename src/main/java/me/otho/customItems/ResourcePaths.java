@@ -14,6 +14,11 @@ public class ResourcePaths {
 	public final static Path datapacks = Paths.get("datapacks");
 	public final static Path datapack_generated = Paths.get("datapacks", generated);
 	
+	/**
+	 * Create pack.mcmeta in a specific path without overwriting existing pack.meta
+	 * @param path
+	 * @param description the text shown in pack.mcmeta
+	 */
 	public static void pack_mcmeta(Path path, String description) {
 		String format = "5";
 		File metaFile = Paths.get(path.toString(), "pack.mcmeta").toFile();
@@ -32,6 +37,12 @@ public class ResourcePaths {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	public static void createEmptyFolders(Path path) {
+		if (!path.toFile().exists()) {
+			path.toFile().mkdirs();
 		}
 	}
 }
