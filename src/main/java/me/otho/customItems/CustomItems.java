@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
@@ -32,7 +33,7 @@ public class CustomItems {
 
 	public static CustomItems instance;
 
-//	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
+	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
 
 	public CustomItems() {
 		if (instance == null)
@@ -86,8 +87,9 @@ public class CustomItems {
 			
 			int generateData = ForgeConfig.generateData.get();
 			if (generateData > 0) {
-				ClientRegistrationHandler.runClientDataGenerators = (generateData|1)>0;
-				
+				if ((generateData|1)>0)
+					proxy.runClientDataGenerators();
+
 				if ((generateData|2)>0)
 					CustomDataGenerator.runCommon();
 				
