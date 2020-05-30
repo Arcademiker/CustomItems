@@ -22,6 +22,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class JsArmorBase extends JsItemBase {
+	protected String armorTexture;
 	protected int durability = 5;
 	protected int reduction = 2;
 	protected int enchantability = 15;
@@ -34,7 +35,7 @@ public abstract class JsArmorBase extends JsItemBase {
 	protected IArmorMaterial armorMaterial() {		
 		final String equipSound = this.equipSound;
 		final JsonElement repairMaterial = this.repairMaterial;
-		return new ArmorMaterial(textureName, durability, reduction, enchantability, toughness, 
+		return new ArmorMaterial(armorTexture, durability, reduction, enchantability, toughness, 
 				() -> {
 					SoundEvent sound = null;
 					if (equipSound != null)
@@ -109,7 +110,7 @@ public abstract class JsArmorBase extends JsItemBase {
 	@Override
 	public Item construct() {
 		final boolean glows = this.glows;
-		final String texture = this.textureName;
+		final String texture = this.armorTexture;
 
 		Item item = new ArmorItem(armorMaterial(), slotType(), this.itemProp()) {
 			@Override
