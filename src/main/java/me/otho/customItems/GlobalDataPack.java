@@ -15,6 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 /*
  * Global Datapack System is inspired by:
@@ -61,4 +62,9 @@ public class GlobalDataPack {
 			CustomTagsProvider.addItemTags();
 		}
 	}
+	
+    @SubscribeEvent
+    public static void onServerStarting(FMLServerStartingEvent e) {
+    	CommandHandler.register(e.getCommandDispatcher());
+    }
 }

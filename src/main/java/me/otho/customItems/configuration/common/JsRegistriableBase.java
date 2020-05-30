@@ -52,6 +52,11 @@ public class JsRegistriableBase implements IRegistrable {
 	public void setRegistryName(String newRegName) {
 		this.registryName = newRegName;
 	}
+	
+	@Override
+	public String getDefaultTextureName() {
+		return this.textureName==null? this.getRegistryName() : this.textureName;
+	}
 
 	@Override
 	public String toString() {

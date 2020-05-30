@@ -11,9 +11,10 @@ import me.otho.customItems.block.CustomSlabBlock;
 import me.otho.customItems.block.CustomStairsBlock;
 import me.otho.customItems.block.CustomTrapDoorBlock;
 import me.otho.customItems.block.CustomWallBlock;
-import me.otho.customItems.block.ITextureBlock;
+import me.otho.customItems.configuration.block.JsBlock;
 import me.otho.customItems.registry.BlockRegistry;
 import me.otho.customItems.registry.ItemRegistry;
+import me.otho.customItems.utility.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.data.DataGenerator;
@@ -48,30 +49,27 @@ public class ModelDataProvider extends BlockStateProvider {
 		.texture("layer0", texture);
 	}
 	
-	private <T extends Block&ITextureBlock> ModelFile cube(T block, String blockModelPath) {
-		return models().cube(blockModelPath, 
-				block.getTextureResLoc(Direction.DOWN), 
-				block.getTextureResLoc(Direction.UP), 
-				block.getTextureResLoc(Direction.NORTH),
-				block.getTextureResLoc(Direction.SOUTH), 
-				block.getTextureResLoc(Direction.WEST), 
-				block.getTextureResLoc(Direction.EAST))
-				.texture("particle", block.getTextureResLoc(Direction.UP));
+	private ModelFile cube(Block block, JsBlock data, String blockModelPath) {
+		return models().cube(blockModelPath,
+				data.getTextureResLoc(Direction.DOWN), 
+				data.getTextureResLoc(Direction.UP), 
+				data.getTextureResLoc(Direction.NORTH),
+				data.getTextureResLoc(Direction.SOUTH), 
+				data.getTextureResLoc(Direction.WEST), 
+				data.getTextureResLoc(Direction.EAST))
+				.texture("particle", data.getTextureResLoc(Direction.UP));
 	}
 	
-	private <T extends Block&ITextureBlock> void normalBlock(T block) {
+	private void normalBlock(Block block, JsBlock data) {
 		String blockModelPath = "block/"+block.getRegistryName().getPath();
 		ModelFile blockModelFile;
 		
-		int count = block.getTextureCount();
-		
-		if (count == 0) {
-			return;
-		} else if (count == 1) {
-			blockModelFile = models().cubeAll(blockModelPath, block.getTextureResLoc(null));
+		if (data.hasSidedTexture()) {
+			blockModelFile = cube(block, data, blockModelPath);
 		} else {
-			blockModelFile = cube(block, blockModelPath);
+			blockModelFile = models().cubeAll(blockModelPath, Util.resLoc(data.getDefaultTextureName()));
 		}
+		
 		getVariantBuilder(block).forAllStates(
 				(blockstate)->ConfiguredModel.builder().modelFile(blockModelFile).build());
 		
@@ -79,8 +77,8 @@ public class ModelDataProvider extends BlockStateProvider {
 		blockItem(block, blockModelFile);
 	}
 	
-	private void fenceBlock(CustomFenceBlock block) {
-		ResourceLocation resLoc = block.getTextureResLoc();
+	private void fenceBlock(CustomFenceBlock block, JsBlock data) {
+		ResourceLocation resLoc = data.getTextureResLoc(null);
 		fenceBlock(block, resLoc);
 		
 		// Item model
@@ -89,17 +87,18 @@ public class ModelDataProvider extends BlockStateProvider {
 		blockItem(block, fenInvModel);
 	}
 	
-	private void slabBlock(CustomSlabBlock block) {
+	private void slabBlock(CustomSlabBlock block, JsBlock data) {
 		String name = block.getRegistryName().getPath();
-		ResourceLocation bottom = block.getTextureResLoc(Direction.DOWN);
-		ResourceLocation top = block.getTextureResLoc(Direction.UP);
-		ResourceLocation side = block.getTextureResLoc(Direction.NORTH);
+		ResourceLocation bottom = data.getTextureResLoc(Direction.DOWN);
+		ResourceLocation top = data.getTextureResLoc(Direction.UP);
+		ResourceLocation side = data.getTextureResLoc(Direction.NORTH);
+		
 		ModelFile slabModel = models().slab(name, side, bottom, top);
 	
 		slabBlock(block, 
 				slabModel, 
 				models().slabTop(name + "_top", side, bottom, top), 
-				cube(block, name + "_double"));
+				cube(block, data, name + "_double"));
 		
 		// Item model
 		blockItem(block, slabModel);
@@ -115,29 +114,19 @@ public class ModelDataProvider extends BlockStateProvider {
         return stairs;
     }
 	
-	private void stairsBlock(CustomStairsBlock block) {
-		int count = block.getTextureCount();
-		
-		ModelFile invModel = null;
-		if (count == 0) {
-			return;
-		} else if (count == 1) {
-			ResourceLocation resLoc = block.getTextureResLoc(null);
-			invModel = stairsBlockInternal(block, resLoc, resLoc, resLoc);
-		} else {
-			invModel = stairsBlockInternal(block, 
-					block.getTextureResLoc(Direction.NORTH),
-					block.getTextureResLoc(Direction.DOWN),
-					block.getTextureResLoc(Direction.UP)
+	private void stairsBlock(CustomStairsBlock block, JsBlock data) {
+		ModelFile invModel = stairsBlockInternal(block, 
+					data.getTextureResLoc(Direction.NORTH),
+					data.getTextureResLoc(Direction.DOWN),
+					data.getTextureResLoc(Direction.UP)
 					);
-		}
 		
 		// Item model
 		blockItem(block, invModel);
 	}
 	
-	private void wallBlock(CustomWallBlock block) {
-		ResourceLocation resLoc = block.getTextureResLoc();
+	private void wallBlock(CustomWallBlock block, JsBlock data) {
+		ResourceLocation resLoc = data.getTextureResLoc(null);
 		wallBlock(block, resLoc);
 		
 		// Item model
@@ -146,32 +135,27 @@ public class ModelDataProvider extends BlockStateProvider {
 		blockItem(block, invModel);
 	}
 	
-	private void paneBlock(CustomPaneBlock block) {
-		ResourceLocation pane;
-		ResourceLocation edge;
-		
-		if (block.getTextureCount() == 2) {
-			pane = block.getTextureResLoc(Direction.UP);
-			edge = block.getTextureResLoc(Direction.EAST);
-		} else {
-			pane = block.getTextureResLoc();
-			edge = pane;
-		}
+	private void paneBlock(CustomPaneBlock block, JsBlock data) {
+		ResourceLocation pane = data.getTextureResLoc(Direction.UP);
+		ResourceLocation edge = data.getTextureResLoc(Direction.EAST);
+
 		paneBlock(block, pane, edge);
 		
 		// Item model
 		simpleItem(block.asItem(), pane);
 	}
 
-	private void doorBlock(CustomDoorBlock block) {
-		doorBlock(block, block.getTextureResLoc(Direction.DOWN), block.getTextureResLoc(Direction.UP));
+	private void doorBlock(CustomDoorBlock block, JsBlock data) {
+		doorBlock(block, data.getTextureResLoc(Direction.DOWN), data.getTextureResLoc(Direction.UP));
+		
+		ResourceLocation itemResLoc = data.getTextureResLoc(Direction.NORTH);
 		
 		// Item model
-		simpleItem(block.asItem(), block.getTextureResLoc(Direction.NORTH));
+		simpleItem(block.asItem(), itemResLoc);
 	}
 	
-	private void trapdoorBlock(CustomTrapDoorBlock block) {
-		ResourceLocation resLoc = block.getTextureResLoc();
+	private void trapdoorBlock(CustomTrapDoorBlock block, JsBlock data) {
+		ResourceLocation resLoc = data.getTextureResLoc(null);
 		trapdoorBlock(block, resLoc, false);
 		
 		// Item model
@@ -180,8 +164,8 @@ public class ModelDataProvider extends BlockStateProvider {
 		models().getBuilder(invFileName).parent(invModel);
 	}
 	
-	private void gateBlock(CustomGateBlock block) {
-		fenceGateBlock(block, block.getTextureResLoc());
+	private void gateBlock(CustomGateBlock block, JsBlock data) {
+		fenceGateBlock(block, data.getTextureResLoc(null));
 		
 		// Item model
 		ModelFile invModel = new ModelFile.UncheckedModelFile(block.getRegistryName());
@@ -191,27 +175,27 @@ public class ModelDataProvider extends BlockStateProvider {
 	
 	@Override
 	protected void registerStatesAndModels() {
-		BlockRegistry.foreachBlock((block) -> {
+		BlockRegistry.foreachBlock((block, data) -> {
 			if (block instanceof CustomBlock) {
-				normalBlock((CustomBlock)block);
+				normalBlock((CustomBlock)block, data);
 			} else if (block instanceof CustomFenceBlock) {
-				fenceBlock((CustomFenceBlock) block);
+				fenceBlock((CustomFenceBlock) block, data);
 			} else if (block instanceof CustomSlabBlock) {
-				slabBlock((CustomSlabBlock) block);
+				slabBlock((CustomSlabBlock) block, data);
 			} else if (block instanceof CustomStairsBlock) {
-				stairsBlock((CustomStairsBlock) block);
+				stairsBlock((CustomStairsBlock) block, data);
 			} else if (block instanceof CustomWallBlock) {
-				wallBlock((CustomWallBlock) block);
+				wallBlock((CustomWallBlock) block, data);
 			} else if (block instanceof CustomPaneBlock) {
-				paneBlock((CustomPaneBlock) block);
+				paneBlock((CustomPaneBlock) block, data);
 			} else if (block instanceof CustomFallingBlock) {
-				normalBlock((CustomFallingBlock)block);
+				normalBlock((CustomFallingBlock)block, data);
 			} else if (block instanceof CustomDoorBlock) {
-				doorBlock((CustomDoorBlock)block);
+				doorBlock((CustomDoorBlock)block, data);
 			} else if (block instanceof CustomTrapDoorBlock) {
-				trapdoorBlock((CustomTrapDoorBlock)block);
+				trapdoorBlock((CustomTrapDoorBlock)block, data);
 			} else if (block instanceof CustomGateBlock) {
-				gateBlock((CustomGateBlock)block);
+				gateBlock((CustomGateBlock)block, data);
 			}
 		});
 		

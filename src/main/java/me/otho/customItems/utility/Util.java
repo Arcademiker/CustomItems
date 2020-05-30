@@ -2,6 +2,7 @@ package me.otho.customItems.utility;
 
 import javax.annotation.Nullable;
 
+import me.otho.customItems.CustomItems;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -30,5 +31,13 @@ public class Util {
 			var = max;
 
 		return var;
+	}
+	
+	public static ResourceLocation resLoc(String textureStr) {
+		String defaultDomain = CustomItems.MOD_ID;
+		String path = "block/"+textureStr;
+		return textureStr.contains(":") ? 
+				new ResourceLocation(path) : 
+				new ResourceLocation(defaultDomain, path);
 	}
 }

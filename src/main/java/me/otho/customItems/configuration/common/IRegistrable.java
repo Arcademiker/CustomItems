@@ -35,6 +35,10 @@ public interface IRegistrable {
 		return getRegistryNameRaw();
 	}
 	
+	default String getDefaultTextureName() {
+		return this.getRegistryName();
+	}
+	
 	public static String genRegistryName(String nameIn) {
 		return nameIn.toLowerCase().replaceAll("\\s+", "_");
 	}

@@ -1,11 +1,15 @@
 package me.otho.customItems.configuration.block;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.tuple.Triple;
 
 import me.otho.customItems.CustomItems;
 import me.otho.customItems.block.BlockType;
 import me.otho.customItems.block.MaterialLookUp;
 import me.otho.customItems.block.SoundTypeLookUp;
+import me.otho.customItems.configuration.common.IReloadable;
+import me.otho.customItems.configuration.common.ITextureProvider;
 import me.otho.customItems.configuration.common.JsRegistriableBase;
 import me.otho.customItems.utility.Util;
 import net.minecraft.block.Block;
@@ -16,9 +20,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 
-public class JsBlock extends JsRegistriableBase {
+public class JsBlock extends JsRegistriableBase implements IReloadable<JsBlock>, ITextureProvider {
 	// Visual and sound
 	protected JsSidedTexture multipleTextures;
 	protected String renderLayer = "solid";
@@ -48,8 +54,15 @@ public class JsBlock extends JsRegistriableBase {
 	public int maxItemDrop = 1;
 	public int eachExtraItemDropChance = 0;
 
-	// button/pressure plate
-	public int tickRate = 30;
+	@Override
+	public void onJsonReload(JsBlock newVal) {
+		this.breaks = newVal.breaks;
+		this.canSilkHarvest = newVal.canSilkHarvest;
+		this.dropItemName = newVal.dropItemName;
+		this.minItemDrop = newVal.minItemDrop;
+		this.maxItemDrop = newVal.maxItemDrop;
+		this.eachExtraItemDropChance = newVal.eachExtraItemDropChance;
+	}
 
 	public Material getMaterial() {
 		return MaterialLookUp.get(this.material);
@@ -116,36 +129,14 @@ public class JsBlock extends JsRegistriableBase {
 		int opaticy = this.isOpaque ? 255 : Util.range(this.lightOpacity, 0, 15);
 		
 		BlockData data = new BlockData(blockItem, opaticy, this.renderLayer);
-		this.fillTextureNames(data.textureNames);
 		
 		return data;
-	}
-	
-	private void fillTextureNames(String[] textureNames) {
-		// Client-only
-		// For compatibility purpose
-		// First check for "textureName" - simple texture (e.g. Stone)
-		// Then check for "multipleTextures" - complex texture (e.g. Furnace)
-		// Otherwise assumes that a json block model is available
-		if (this.textureName != null) {
-			textureNames[0] = this.textureName;
-		} else if (this.multipleTextures != null) {
-			textureNames[0] = this.multipleTextures.yneg;
-			textureNames[1] = this.multipleTextures.ypos;
-			textureNames[2] = this.multipleTextures.zneg;
-			textureNames[3] = this.multipleTextures.zpos;
-			textureNames[4] = this.multipleTextures.xneg;
-			textureNames[5] = this.multipleTextures.xpos;
-		} else {
-			textureNames[0] = this.getRegistryName();
-		}
 	}
 	
 	public static class BlockData {
 		public final BlockItem blockItem;
 		public final int opacity;
 		public final String layer;
-		public final String[] textureNames = new String[6];
 		
 		private BlockData(BlockItem blockItem, int opacity, String layer) {
 			this.blockItem = blockItem;
@@ -154,6 +145,54 @@ public class JsBlock extends JsRegistriableBase {
 		}
 	}
 	
+	/////////////////////////////////////////////
+	/// Textures
+	/////////////////////////////////////////////	
+	@Override
+	public boolean hasSidedTexture() {
+		return this.multipleTextures != null;
+	}
+	
+	@Override
+	public ResourceLocation getTextureResLoc(@Nullable Direction side) {
+		String textureName;
+		if (side == null) {
+			textureName = this.getDefaultTextureName();
+		} else {
+			if (this.multipleTextures == null) {
+				textureName = this.getDefaultTextureName();
+			} else {
+				switch (side) {
+				case DOWN:
+					textureName = this.multipleTextures.yneg;
+					break;
+				case UP:
+					textureName = this.multipleTextures.ypos;
+					break;
+				case NORTH:
+					textureName = this.multipleTextures.zneg;
+					break;
+				case SOUTH:
+					textureName = this.multipleTextures.zpos;
+					break;
+				case WEST:
+					textureName = this.multipleTextures.xneg;
+					break;
+				case EAST:
+					textureName = this.multipleTextures.xpos;
+					break;
+				default:
+					return null;
+				}
+				
+				if (textureName == null)
+					textureName = this.getDefaultTextureName();
+			}
+		}
+		
+		return Util.resLoc(textureName);
+	}
+		
 	/////////////////////////////////////////////
 	/// Loot table and Item drops
 	/////////////////////////////////////////////

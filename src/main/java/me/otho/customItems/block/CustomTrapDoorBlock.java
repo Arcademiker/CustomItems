@@ -26,11 +26,6 @@ public class CustomTrapDoorBlock extends TrapDoorBlock  implements IBlockInterfa
 	}
 	
 	@Override
-	public String[] getTextureNamesRaw() {
-		return blockData.textureNames;
-	}
-	
-	@Override
 	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		return blockData.opacity;
 	}

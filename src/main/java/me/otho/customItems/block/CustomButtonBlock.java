@@ -31,11 +31,6 @@ public class CustomButtonBlock extends AbstractButtonBlock implements IBlockInte
 	}
 	
 	@Override
-	public String[] getTextureNamesRaw() {
-		return blockData.textureNames;
-	}
-	
-	@Override
 	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		return blockData.opacity;
 	}
