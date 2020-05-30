@@ -8,7 +8,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 
-import me.otho.customItems.utility.LogHelper;
+import me.otho.customItems.client.data.LocalizationGenerator;
+import me.otho.customItems.client.data.ModelDataProvider;
+import me.otho.customItems.common.LogHelper;
+import me.otho.customItems.data.BlockTagsProvider;
+import me.otho.customItems.data.ItemTagsProvider;
+import me.otho.customItems.data.LootTableDataProvider;
+import me.otho.customItems.data.ResourcePaths;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IDataProvider;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;

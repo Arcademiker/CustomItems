@@ -3,6 +3,8 @@ package me.otho.customItems;
 import java.io.File;
 import java.util.Map;
 
+import me.otho.customItems.data.CustomTagsProvider;
+import me.otho.customItems.data.ResourcePaths;
 import net.minecraft.resources.FolderPack;
 import net.minecraft.resources.IPackFinder;
 import net.minecraft.resources.ResourcePackInfo;

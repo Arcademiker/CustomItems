@@ -1,6 +1,6 @@
 package me.otho.customItems;
 
-import me.otho.customItems.mod.blocks.IRenderLayerHandler;
+import me.otho.customItems.block.IRenderLayerHandler;
 import me.otho.customItems.registry.BlockRegistry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CustomItems.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ClientRegistrationHandler {	
+public class ClientRegistrationHandler {
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();

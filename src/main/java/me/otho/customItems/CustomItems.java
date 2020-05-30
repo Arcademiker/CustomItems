@@ -3,13 +3,13 @@ package me.otho.customItems;
 import java.io.File;
 import java.io.IOException;
 
+import me.otho.customItems.common.CustomTab;
+import me.otho.customItems.common.LogHelper;
 import me.otho.customItems.configuration.ForgeConfig;
 import me.otho.customItems.configuration.JsonConfigurationHandler;
-import me.otho.customItems.mod.creativeTab.CustomTab;
 import me.otho.customItems.registry.BlockRegistry;
 import me.otho.customItems.registry.CommonRegistry;
 import me.otho.customItems.registry.ItemRegistry;
-import me.otho.customItems.utility.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
@@ -42,6 +42,7 @@ public class CustomItems {
 			throw new RuntimeException("Duplicated Class Instantiation: CustomItems");
 		
 		ForgeConfig.construct();
+		proxy.createClientResPackDirs();
 	}
 
 	@Mod.EventBusSubscriber(modid = CustomItems.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)

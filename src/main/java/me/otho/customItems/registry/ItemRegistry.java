@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import me.otho.customItems.LocalizationGenerator;
+import me.otho.customItems.client.data.LocalizationGenerator;
+import me.otho.customItems.common.LogHelper;
 import me.otho.customItems.configuration.JsonConfigurationHandler;
-import me.otho.customItems.configuration.jsonReaders.items.JSItemBase;
-import me.otho.customItems.utility.LogHelper;
+import me.otho.customItems.configuration.item.JsItemBase;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.TieredItem;
@@ -16,7 +16,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 public class ItemRegistry {
 	// Values only available during start-up
-	private final static Map<Item, JSItemBase> items = new HashMap<>();
+	private final static Map<Item, JsItemBase> items = new HashMap<>();
 	
 	public static void registerItems(IForgeRegistry<Item> registry) {
 		initItems(registry, JsonConfigurationHandler.allData.items);
@@ -38,11 +38,11 @@ public class ItemRegistry {
 			.forEach((entry)->registry.register(entry.getKey()));
 	}
 	
-	public static void initItems(IForgeRegistry<Item> registry, JSItemBase[] dataList) {	
+	public static void initItems(IForgeRegistry<Item> registry, JsItemBase[] dataList) {	
 		if (dataList == null)
 			return;
 		
-		for (JSItemBase data: dataList) {
+		for (JsItemBase data: dataList) {
 			LogHelper.info("Instantiating Item: " + data.toString(), 1);
 			Item item = data.construct();
 			
@@ -72,7 +72,7 @@ public class ItemRegistry {
 		items.keySet().forEach(consumer);
 	}
 	
-	public static void foreachItem(BiConsumer<? super Item, ? super JSItemBase> consumer) {
+	public static void foreachItem(BiConsumer<? super Item, ? super JsItemBase> consumer) {
 		items.forEach(consumer);
 	}
 }

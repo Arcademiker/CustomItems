@@ -1,12 +1,17 @@
 package me.otho.customItems;
 
+import me.otho.customItems.data.ResourcePaths;
+
 public class ClientProxy extends CommonProxy {
 	@Override
-	public void runClientDataGenerators() {
+	public void createClientResPackDirs() {
 		// Create .minecraft/resources/customitems_resources folder and its pack.mcmeta, if not found
 		ResourcePaths.createEmptyFolders(ResourcePaths.respack_src);
 		ResourcePaths.pack_mcmeta(ResourcePaths.respack_src, "CustomItems Resources");
-
+	}
+	
+	@Override
+	public void runClientDataGenerators() {
 		// Run client data generators
 		CustomDataGenerator.runClient();
 
