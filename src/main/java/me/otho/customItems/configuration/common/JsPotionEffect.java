@@ -8,7 +8,7 @@ import net.minecraft.potion.EffectInstance;
 
 public class JsPotionEffect {
 	private String effect = "speed";
-	private int potionDuration = 30;
+	private int potionDuration = 30;	// in Seconds
 	private int potionAmplifier = 0;
 	public float potionEffectProbability = 1;
 
@@ -19,7 +19,7 @@ public class JsPotionEffect {
 			return null;
 		}
 
-		return new EffectInstance(effect, potionDuration, potionAmplifier);
+		return new EffectInstance(effect, potionDuration * 20, potionAmplifier);
 	}
 	
 	public boolean addEffectToFood(Food.Builder foodDefBuilder) {

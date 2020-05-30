@@ -34,21 +34,21 @@ public class JsBlock extends JsRegistriableBase implements IReloadable<JsBlock>,
 
 	// Block Properties
 	protected String material = "rock";
-	public String toolClass;
+	protected String toolClass;
 	protected float resistance = 10;
 	protected float hardness = 2;
 	protected int lightLevel = 0;
 	protected int lightOpacity = 0;
-	public int harvestLevel = 0;
+	protected int harvestLevel = 0;
 	protected float slipperiness = 0.6f;
 	protected boolean isCollidable = true;
 	protected int flammability = 0;
 	protected int fireEncouragement = 0;
 
 	// Drop (Loot Table)
-	public boolean breaks = false;
-	public boolean canSilkHarvest = false;
-	public String dropItemName = null;
+	protected boolean breaks = false;
+	protected boolean canSilkHarvest = false;
+	protected String dropItemName = null;
 	// These are applicable if canSilkHarvest==dropsItSelf==true && dropItemName!=null
 	public int minItemDrop = 1;
 	public int maxItemDrop = 1;
@@ -101,7 +101,7 @@ public class JsBlock extends JsRegistriableBase implements IReloadable<JsBlock>,
 		Material material = this.getMaterial();
 		if (material == Material.GLASS) {
 			this.isOpaque = false;
-			this.renderLayer = "translucent";
+//			this.renderLayer = "translucent";
 		}
 	}
 
@@ -142,7 +142,7 @@ public class JsBlock extends JsRegistriableBase implements IReloadable<JsBlock>,
 		
 		// Block properties
 		((FireBlock)Blocks.FIRE).setFireInfo(block, this.fireEncouragement, this.flammability);
-		int opaticy = this.isOpaque ? 255 : Util.range(this.lightOpacity, 0, 15);
+		int opaticy = this.isOpaque ? 255 : Util.range(this.lightOpacity, 0, 255);
 		
 		BlockData data = new BlockData(blockItem, opaticy, this.renderLayer);
 		
@@ -213,7 +213,7 @@ public class JsBlock extends JsRegistriableBase implements IReloadable<JsBlock>,
 	/// Loot table and Item drops
 	/////////////////////////////////////////////
 	/*
-	 *  Truth table:                                       NORMAL         | SILK_TOUCH
+	 *  Truth table:                                  NORMAL         | SILK_TOUCH
 		dropItemName=air, canSilkHarvest=0, breaks=0: original block | original block
 		dropItemName=air, canSilkHarvest=1, breaks=0: original block | original block
 		dropItemName=xxx, canSilkHarvest=0, breaks=0: dropItemName   | dropItemName
