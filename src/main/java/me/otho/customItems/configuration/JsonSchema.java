@@ -1,8 +1,11 @@
 package me.otho.customItems.configuration;
 
+import java.util.function.BiConsumer;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import me.otho.customItems.configuration.block.JsBlock;
+import me.otho.customItems.configuration.common.IRegistrable;
 import me.otho.customItems.configuration.common.JsItemGroup;
 import me.otho.customItems.configuration.item.JsFood;
 import me.otho.customItems.configuration.item.JsItem;
@@ -52,5 +55,36 @@ public class JsonSchema {
 		mergeTo.pickaxes = ArrayUtils.addAll(this.pickaxes, mergeTo.pickaxes);
 		mergeTo.shovels = ArrayUtils.addAll(this.shovels, mergeTo.shovels);
 		mergeTo.swords = ArrayUtils.addAll(this.swords, mergeTo.swords);
+	}
+	
+	public void updateExisting(JsonSchema source) {	
+		match(this.blocks, source.blocks, (js1, js2)->js1.onJsonReload(js2));
+		match(this.items, source.items, (js1, js2)->js1.onJsonReload(js2));
+		match(this.foods, source.foods, (js1, js2)->js1.onJsonReload(js2));
+
+		match(this.helmets, source.helmets, (js1, js2)->js1.onJsonReload(js2));
+		match(this.chestplates, source.chestplates, (js1, js2)->js1.onJsonReload(js2));
+		match(this.leggings, source.leggings, (js1, js2)->js1.onJsonReload(js2));
+		match(this.boots, source.boots, (js1, js2)->js1.onJsonReload(js2));
+		
+		match(this.axes, source.axes, (js1, js2)->js1.onJsonReload(js2));
+		match(this.hoes, source.hoes, (js1, js2)->js1.onJsonReload(js2));
+		match(this.pickaxes, source.pickaxes, (js1, js2)->js1.onJsonReload(js2));
+		match(this.shovels, source.shovels, (js1, js2)->js1.onJsonReload(js2));
+		match(this.swords, source.swords, (js1, js2)->js1.onJsonReload(js2));
+	}
+	
+	private static <T extends IRegistrable> void match(T[] existing, T[] newVals, BiConsumer<T,T> action) {
+		if (existing==null || newVals==null)
+			return;
+
+		for (T js1: existing) {
+			for (T js2: newVals) {
+				if (js1.matches(js2)) {
+					action.accept(js1, js2);
+					return;
+				}
+			}
+		}
 	}
 }

@@ -33,11 +33,15 @@ public class Util {
 		return var;
 	}
 	
-	public static ResourceLocation resLoc(String textureStr) {
-		String defaultDomain = CustomItems.MOD_ID;
-		String path = "block/"+textureStr;
-		return textureStr.contains(":") ? 
-				new ResourceLocation(path) : 
-				new ResourceLocation(defaultDomain, path);
+	public static ResourceLocation resLoc(String type, String textureStr) {
+		int i = textureStr.indexOf(':');
+		String domain = i>0 ? textureStr.substring(0, i) : CustomItems.MOD_ID;
+		String path = textureStr.substring(i+1);
+		
+		i = textureStr.indexOf('/');
+		if (i == -1)
+			path = type + "/" + path;
+		
+		return new ResourceLocation(domain, path);
 	}
 }

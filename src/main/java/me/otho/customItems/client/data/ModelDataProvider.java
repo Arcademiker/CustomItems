@@ -14,7 +14,6 @@ import me.otho.customItems.block.CustomWallBlock;
 import me.otho.customItems.configuration.block.JsBlock;
 import me.otho.customItems.registry.BlockRegistry;
 import me.otho.customItems.registry.ItemRegistry;
-import me.otho.customItems.utility.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.data.DataGenerator;
@@ -67,7 +66,7 @@ public class ModelDataProvider extends BlockStateProvider {
 		if (data.hasSidedTexture()) {
 			blockModelFile = cube(block, data, blockModelPath);
 		} else {
-			blockModelFile = models().cubeAll(blockModelPath, Util.resLoc(data.getDefaultTextureName()));
+			blockModelFile = models().cubeAll(blockModelPath, data.getTextureResLoc(null));
 		}
 		
 		getVariantBuilder(block).forAllStates(

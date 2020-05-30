@@ -62,6 +62,22 @@ public class JsBlock extends JsRegistriableBase implements IReloadable<JsBlock>,
 		this.minItemDrop = newVal.minItemDrop;
 		this.maxItemDrop = newVal.maxItemDrop;
 		this.eachExtraItemDropChance = newVal.eachExtraItemDropChance;
+		
+		this.textureName = newVal.textureName;
+		if (this.multipleTextures == null && newVal.multipleTextures != null) {
+			this.multipleTextures = new JsSidedTexture();
+		} else if (this.multipleTextures != null && newVal.multipleTextures == null) {
+			this.multipleTextures = null;
+		}
+		
+		if (this.multipleTextures != null && newVal.multipleTextures != null) {
+			this.multipleTextures.ypos = newVal.multipleTextures.ypos;
+			this.multipleTextures.yneg = newVal.multipleTextures.yneg;
+			this.multipleTextures.xpos = newVal.multipleTextures.xpos;
+			this.multipleTextures.xneg = newVal.multipleTextures.xneg;
+			this.multipleTextures.zpos = newVal.multipleTextures.zpos;
+			this.multipleTextures.zneg = newVal.multipleTextures.zneg;
+		}
 	}
 
 	public Material getMaterial() {
@@ -190,7 +206,7 @@ public class JsBlock extends JsRegistriableBase implements IReloadable<JsBlock>,
 			}
 		}
 		
-		return Util.resLoc(textureName);
+		return Util.resLoc("block", textureName);
 	}
 		
 	/////////////////////////////////////////////

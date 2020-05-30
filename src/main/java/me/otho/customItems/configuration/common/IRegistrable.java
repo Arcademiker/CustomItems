@@ -39,6 +39,10 @@ public interface IRegistrable {
 		return this.getRegistryName();
 	}
 	
+	default boolean matches(IRegistrable in) {
+		return this.getRegistryName().equals(in.getRegistryName());
+	}
+	
 	public static String genRegistryName(String nameIn) {
 		return nameIn.toLowerCase().replaceAll("\\s+", "_");
 	}
