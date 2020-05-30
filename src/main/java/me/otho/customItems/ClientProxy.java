@@ -8,6 +8,10 @@ public class ClientProxy extends CommonProxy {
 		// Create .minecraft/resources/customitems_resources folder and its pack.mcmeta, if not found
 		ResourcePaths.createEmptyFolders(ResourcePaths.respack_src);
 		ResourcePaths.pack_mcmeta(ResourcePaths.respack_src, "CustomItems Resources");
+		
+		ResourcePaths.createEmptyFolders(ResourcePaths.respack_src_block);
+		ResourcePaths.createEmptyFolders(ResourcePaths.respack_src_item);
+		ResourcePaths.createEmptyFolders(ResourcePaths.respack_src_armor);
 	}
 	
 	@Override

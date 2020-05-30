@@ -16,6 +16,11 @@ public class ResourcePaths {
 	public final static Path datapacks = Paths.get("datapacks");
 	public final static Path datapack_generated = Paths.get("datapacks", generated);
 	
+	public final static Path respack_src_textures = Paths.get(respack_src.toString(), "assets", CustomItems.MOD_ID, "textures");
+	public final static Path respack_src_block = Paths.get(respack_src_textures.toString(), "block");
+	public final static Path respack_src_item = Paths.get(respack_src_textures.toString(), "item");
+	public final static Path respack_src_armor = Paths.get(respack_src_textures.toString(), "models", "armor");
+	
 	/**
 	 * Create pack.mcmeta in a specific path without overwriting existing pack.meta
 	 * @param path
