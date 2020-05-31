@@ -228,16 +228,7 @@ public class JsBlock extends JsRegistriableBase implements IReloadable<JsBlock>,
 	}
 	
 	protected Item getDropItemRecord() {
-		if (this.dropItemName==null)
-			return Items.AIR;
-
-		int iSeperator = this.dropItemName.indexOf(':');
-		String domain = iSeperator>=0 ? this.dropItemName.substring(0, iSeperator) : CustomItems.MOD_ID;
-		String path = iSeperator>=0 ? this.dropItemName.substring(iSeperator+1) : this.dropItemName;
-
-		Item item = Util.get(Item.class, domain, path);
-		
-		return item==null ? Items.AIR : item;
+		return Util.parseDropItem(this.dropItemName);
 	}
 	
 	protected Item getDropBlockRecord() {

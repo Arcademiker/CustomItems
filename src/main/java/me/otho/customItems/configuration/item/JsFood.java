@@ -1,10 +1,16 @@
 package me.otho.customItems.configuration.item;
 
 import me.otho.customItems.configuration.common.JsPotionEffect;
+import me.otho.customItems.utility.Util;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.UseAction;
+import net.minecraft.util.LazyValue;
+import net.minecraft.world.World;
 
 public class JsFood extends JsItemBase {
 	protected int healAmount = 1;
@@ -13,6 +19,7 @@ public class JsFood extends JsItemBase {
 	protected boolean isWolfFood = false;	// TODO: isWolfFood should be renamed to isMeat
 	protected boolean fastToEat = false;
 	protected String useAction = "eat";
+	protected String dropItemName = null;
 
 	protected JsPotionEffect[] potionEffects;
 
@@ -52,11 +59,12 @@ public class JsFood extends JsItemBase {
 		}
 		return UseAction.EAT;
 	}
-	
+
 	@Override
 	public Item construct() {
 		final boolean glows = this.glows;
 		final UseAction useAction = this.getUseAction();
+		final LazyValue<Item> itemReturnSupplier = new LazyValue<>(()->Util.parseDropItem(this.dropItemName));
 		Item item = new Item(this.itemProp()) {
 			@Override
 			public boolean hasEffect(ItemStack stack) {
@@ -68,6 +76,21 @@ public class JsFood extends JsItemBase {
 			@Override
 			public UseAction getUseAction(ItemStack stack) {
 				return stack.getItem().isFood() ? useAction : UseAction.NONE;
+			}
+			
+			@Override
+			public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
+				ItemStack itemstack = super.onItemUseFinish(stack, worldIn, entityLiving);
+				
+				Item itemReturn = itemReturnSupplier.getValue();
+				if (itemReturn != Items.AIR && entityLiving instanceof PlayerEntity) {
+					ItemStack itemStackReturn = new ItemStack(itemReturn);
+					boolean added = ((PlayerEntity) entityLiving).inventory.addItemStackToInventory(itemStackReturn);
+					if (!added && !worldIn.isRemote) {
+						((PlayerEntity) entityLiving).dropItem(itemStackReturn, true, false);
+					}
+				}
+				return itemstack;
 			}
 		};
 
