@@ -27,6 +27,7 @@ import net.minecraftforge.common.ToolType;
 public class JsBlock extends JsRegistriableBase implements IReloadable<JsBlock>, ITextureProvider {
 	// Visual and sound
 	protected JsSidedTexture multipleTextures;
+	protected boolean generateModel = true;
 	protected String renderLayer = "solid";
 	protected boolean isOpaque = true;
 	protected String type = "NORMAL";
@@ -163,7 +164,12 @@ public class JsBlock extends JsRegistriableBase implements IReloadable<JsBlock>,
 	
 	/////////////////////////////////////////////
 	/// Textures
-	/////////////////////////////////////////////	
+	/////////////////////////////////////////////
+	@Override
+	public boolean generateModel() {
+		return this.generateModel;
+	}
+	
 	@Override
 	public boolean hasSidedTexture() {
 		return this.multipleTextures != null;

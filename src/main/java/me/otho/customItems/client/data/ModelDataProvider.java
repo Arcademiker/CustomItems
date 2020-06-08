@@ -175,6 +175,9 @@ public class ModelDataProvider extends BlockStateProvider {
 	@Override
 	protected void registerStatesAndModels() {
 		BlockRegistry.foreachBlock((block, data) -> {
+			if (!data.generateModel())
+				return;
+			
 			if (block instanceof CustomBlock) {
 				normalBlock((CustomBlock)block, data);
 			} else if (block instanceof CustomFenceBlock) {
